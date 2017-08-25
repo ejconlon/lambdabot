@@ -1,6 +1,6 @@
 'use strict';
 
-const backend = require('backend.js');
+const backend = require('./backend.js');
 const awsServerlessExpress = require('aws-serverless-express');
 
 const app = backend.createApp();
