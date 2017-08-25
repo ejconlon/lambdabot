@@ -16,6 +16,10 @@ compile:
   override:
     - cd lambdabot && make package
 
+test:
+  override:
+    - cd lambdabot && make test
+
 # deployment:
 #   production:
 #     branch: master

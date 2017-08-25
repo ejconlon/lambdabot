@@ -4,6 +4,9 @@ clean:
 install:
 	yarn install
 
+test:
+	echo "Write some tests!"
+
 package:
 	script/package.sh
 
