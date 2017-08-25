@@ -20,8 +20,8 @@ test:
   override:
     - cd lambdabot && make test
 
-# deployment:
-#   production:
-#     branch: master
-#     commands:
-#       - cd lambdabot && ./script/upload.sh $PROFILE release
+deployment:
+  production:
+    branch: master
+    commands:
+      - cd lambdabot && ./script/upload.sh $PROFILE release
