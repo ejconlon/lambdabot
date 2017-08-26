@@ -43,10 +43,34 @@ resource "aws_iam_role_policy_attachment" "gateway_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
 }
 
+resource "aws_iam_role" "iam_for_firehose" {
+  name = "iam_for_firehose"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "firehose.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
 output "iam_for_lambda_arn" {
   value = "${aws_iam_role.iam_for_lambda.arn}"
 }
 
 output "iam_for_gateway_arn" {
   value = "${aws_iam_role.iam_for_gateway.arn}"
+}
+
+output "iam_for_firehose_arn" {
+  value = "${aws_iam_role.iam_for_firehose.arn}"
 }

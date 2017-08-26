@@ -4,7 +4,7 @@ data "terraform_remote_state" "s3" {
     profile = "${var.profile}"
     region  = "${var.region}"
     bucket  = "${var.state_bucket}"
-    key     = "s3/terraform.tfstate"
+    key     = "${var.project}/s3/terraform.tfstate"
   }
 }
 
@@ -30,7 +30,7 @@ resource "aws_iam_user_policy" "ci_access_policy" {
       ],
       "Effect": "Allow",
       "Resource": [
-        "arn:aws:s3:::${data.terraform_remote_state.s3.lambda_bucket_name}/*"
+        "arn:aws:s3:::${data.terraform_remote_state.s3.deploy_bucket_name}/*"
       ]
     }
   ]

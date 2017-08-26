@@ -1,12 +1,10 @@
-data "aws_caller_identity" "current" {}
-
 data "terraform_remote_state" "s3" {
   backend = "s3"
   config {
     profile = "${var.profile}"
     region  = "${var.region}"
     bucket  = "${var.state_bucket}"
-    key     = "s3/terraform.tfstate"
+    key     = "${var.project}/s3/terraform.tfstate"
   }
 }
 
@@ -16,7 +14,7 @@ data "terraform_remote_state" "roles" {
     profile = "${var.profile}"
     region  = "${var.region}"
     bucket  = "${var.state_bucket}"
-    key     = "roles/terraform.tfstate"
+    key     = "${var.project}/roles/terraform.tfstate"
   }
 }
 

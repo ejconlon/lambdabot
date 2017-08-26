@@ -10,6 +10,12 @@ variable "region" {
   default = "_REGION_"
 }
 
+variable "project" {
+  type = "string"
+  description = "Project"
+  default = "_PROJECT_"
+}
+
 variable "state_bucket" {
   type = "string"
   description = "Terraform state S3 bucket"
@@ -26,6 +32,6 @@ terraform {
     profile = "_PROFILE_"
     region  = "_REGION_"
     bucket  = "_PROFILE_-terraform"
-    key     = "_COMPONENT_/terraform.tfstate"
+    key     = "_PROJECT_/_COMPONENT_/terraform.tfstate"
   }
 }
