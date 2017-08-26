@@ -9,7 +9,7 @@ data "terraform_remote_state" "s3" {
 }
 
 resource "aws_iam_user" "ci_user" {
-  name = "ci"
+  name = "${var.project}-ci"
 }
 
 resource "aws_iam_access_key" "ci_access_key" {

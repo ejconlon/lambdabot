@@ -12,4 +12,4 @@ else
   AUTH=""
 fi
 
-aws s3 cp release/lambdabot.zip s3://${PROFILE}-lambda/lambdabot/${TAG}/lambdabot.zip ${AUTH}
+aws s3 cp release/lambdabot.zip s3://${PROFILE}-lambdabot-deploy/lambdabot/${TAG}/lambdabot.zip ${AUTH}
