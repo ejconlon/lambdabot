@@ -28,9 +28,29 @@ resource "aws_iam_role" "lambdabot_gateway_role" {
 EOF
 }
 
+resource "aws_iam_policy" "lambdabot_gateway_policy" {
+  name        = "lambdabot_gateway_policy"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "${data.terraform_remote_state.lambdabot_lambda.lambdabot_lambda_arn}"
+      ]
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_role_policy_attachment" "lambdabot_gateway_attachment" {
   role       = "${aws_iam_role.lambdabot_gateway_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
+  policy_arn = "${aws_iam_policy.lambdabot_gateway_policy.arn}"
 }
 
 resource "aws_api_gateway_rest_api" "lambdabot_api" {
