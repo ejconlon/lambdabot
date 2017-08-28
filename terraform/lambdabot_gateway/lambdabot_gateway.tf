@@ -73,3 +73,16 @@ resource "aws_api_gateway_integration" "lambdabot_integration" {
   uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${data.terraform_remote_state.lambdabot_lambda.lambdabot_lambda_arn}/invocations"
   credentials             = "${aws_iam_role.lambdabot_gateway_role.arn}"
 }
+
+resource "aws_api_gateway_deployment" "lambdabot_deployment" {
+  rest_api_id = "${aws_api_gateway_rest_api.lambdabot_api.id}"
+  stage_name  = "api"
+}
+
+output "lambdabot_id" {
+  value = "${aws_api_gateway_rest_api.lambdabot_api.id}"
+}
+
+output "lambdabot_url" {
+  value = "https://${aws_api_gateway_rest_api.lambdabot_api.id}.execute-api.${var.region}.amazonaws.com/api"
+}
