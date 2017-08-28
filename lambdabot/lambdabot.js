@@ -1,3 +1,5 @@
+'use strict';
+
 const AWS = require('aws-sdk');
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -45,12 +47,15 @@ exports.createApp = function() {
 
   app.post('/hello', function (req, res) {
     const name = req.body.name;
+    const data = JSON.stringify({ name });
+    console.log('Writing: ' + data);
     const params = {
       DeliveryStreamName: config.firehoseName,
       Record: {
-        Data: JSON.stringify({ name })
+        Data: data
       }
     }
+    res.sendStatus(200);
     firehose.putRecord(params, function (err, data) {
       if (err) {
         console.error(err.stack);
@@ -59,6 +64,11 @@ exports.createApp = function() {
         res.sendStatus(200);
       }
     });
+  });
+
+  app.use(function (req, res) {
+    console.error('Unmatched: ' + req.method + ' ' + req.path);
+    res.sendStatus(400);
   });
 
   app.use(function (err, req, res, next) {

@@ -7,5 +7,5 @@ const app = lambdabot.createApp();
 const server = awsServerlessExpress.createServer(app);
 
 exports.handler = function (event, context) {
-  awsServerlessExpress.proxy(server, event.requestContext, context);
+  awsServerlessExpress.proxy(server, event, context);
 }
