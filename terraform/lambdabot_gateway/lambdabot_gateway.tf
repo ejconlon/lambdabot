@@ -76,6 +76,7 @@ resource "aws_api_gateway_method" "lambdabot_method" {
 }
 
 resource "aws_api_gateway_method_settings" "lambdabot_method_settings" {
+  depends_on = ["aws_api_gateway_deployment.lambdabot_deployment"]
   rest_api_id = "${aws_api_gateway_rest_api.lambdabot_api.id}"
   stage_name  = "${var.lambdabot_stage}"
   method_path = "*/*"
@@ -98,6 +99,7 @@ resource "aws_api_gateway_integration" "lambdabot_integration" {
 }
 
 resource "aws_api_gateway_deployment" "lambdabot_deployment" {
+  depends_on = ["aws_api_gateway_integration.lambdabot_integration"]
   rest_api_id = "${aws_api_gateway_rest_api.lambdabot_api.id}"
   stage_name  = "${var.lambdabot_stage}"
 }

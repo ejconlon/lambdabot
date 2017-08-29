@@ -14,6 +14,8 @@ if [[ "${ENDPOINT}" == "index" ]]; then
   ${CURL} ${API_URL}
 elif [[ "${ENDPOINT}" == "test" ]]; then
   ${CURL} ${API_URL}/test
+elif [[ "${ENDPOINT}" == "test-log" ]]; then
+  ${CURL} ${API_URL}/test?log=1
 elif [[ "${ENDPOINT}" == "hello" ]]; then
   ${CURL} -d '{"name":"script"}' -H 'Content-Type: application/json' ${API_URL}/hello
 else

@@ -46,8 +46,10 @@ exports.createApp = function() {
   });
 
   app.get('/test', function (req, res) {
-    console.log('Invoked test.');
-    res.send('Completed test.');
+    if (req.query.log === '1') {
+      console.log('Logging from test');
+    }
+    res.send('Completed test');
   });
 
   app.post('/hello', function (req, res) {

@@ -22,6 +22,9 @@ sam-post:
 sam-test:
 	sam local invoke lambdabot_lambda -e fixtures/get-test-request.json
 
+sam-test-log:
+	sam local invoke lambdabot_lambda -e fixtures/get-test-log-request.json
+
 sam-api:
 	sam local start-api
 

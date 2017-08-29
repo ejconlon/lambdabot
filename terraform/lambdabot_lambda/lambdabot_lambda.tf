@@ -64,7 +64,6 @@ resource "aws_iam_role_policy_attachment" "lambdabot_lambda_attachment" {
   policy_arn = "${aws_iam_policy.lambdabot_lambda_policy.arn}"
 }
 
-
 resource "aws_lambda_function" "lambdabot_lambda" {
   s3_bucket        = "${data.terraform_remote_state.s3.deploy_bucket_name}"
   s3_key           = "lambdabot/release/lambdabot.zip"
