@@ -11,7 +11,9 @@ shift
 shift
 shift
 
-export PATH=".bin:${PATH}"
+PWD=$(pwd)
+
+export PATH="${PWD}/.bin:${PATH}"
 
 cd terraform/$COMPONENT
 sed -e "s/_PROJECT_/$PROJECT/" \
@@ -20,5 +22,5 @@ sed -e "s/_PROJECT_/$PROJECT/" \
     -e "s/_COMPONENT_/$COMPONENT/" \
     ../provider.tf.tpl > provider.tf
 terragrunt init
-terragrunt $@ --terragrunt-non-interactive 
+terragrunt $@ --terragrunt-non-interactive
 rm -f provider.tf
