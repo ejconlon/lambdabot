@@ -102,19 +102,21 @@ resource "aws_api_gateway_deployment" "lambdabot_deployment" {
   stage_name  = "${var.lambdabot_stage}"
 }
 
-resource "aws_api_gateway_usage_plan" "lambdabot_usage" {
-  name         = "lambdabot_usage"
-
-  api_stages {
-    api_id = "${aws_api_gateway_rest_api.lambdabot_api.id}"
-    stage  = "${var.lambdabot_stage}"
-  }
-
-  quota_settings {
-    limit  = 1000
-    period = "MONTH"
-  }
-}
+# NOTE: Sadly, only has an effect when you are using API keys?
+#
+# resource "aws_api_gateway_usage_plan" "lambdabot_usage" {
+#   name         = "lambdabot_usage"
+#
+#   api_stages {
+#     api_id = "${aws_api_gateway_rest_api.lambdabot_api.id}"
+#     stage  = "${var.lambdabot_stage}"
+#   }
+#
+#   quota_settings {
+#     limit  = 1000
+#     period = "MONTH"
+#   }
+# }
 
 output "lambdabot_id" {
   value = "${aws_api_gateway_rest_api.lambdabot_api.id}"

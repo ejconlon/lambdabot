@@ -28,14 +28,14 @@ function createCredentialProvider(config) {
 }
 
 exports.createApp = function() {
-  const config = createDefaultConfig();
-
-  const credentialProvider = createCredentialProvider(config);
-
-  const firehose = new AWS.Firehose({
-    region: config.region,
-    credentialProvider
-  });
+  // const config = createDefaultConfig();
+  //
+  // const credentialProvider = createCredentialProvider(config);
+  //
+  // const firehose = new AWS.Firehose({
+  //   region: config.region,
+  //   credentialProvider
+  // });
 
   const app = express();
 
@@ -49,21 +49,21 @@ exports.createApp = function() {
     const name = req.body.name;
     const data = JSON.stringify({ name });
     console.log('Writing: ' + data);
-    const params = {
-      DeliveryStreamName: config.firehoseName,
-      Record: {
-        Data: data
-      }
-    }
+    // const params = {
+    //   DeliveryStreamName: config.firehoseName,
+    //   Record: {
+    //     Data: data
+    //   }
+    // }
     res.sendStatus(200);
-    firehose.putRecord(params, function (err, data) {
-      if (err) {
-        console.error(err.stack);
-        res.sendStatus(500);
-      } else {
-        res.sendStatus(200);
-      }
-    });
+    // firehose.putRecord(params, function (err, data) {
+    //   if (err) {
+    //     console.error(err.stack);
+    //     res.sendStatus(500);
+    //   } else {
+    //     res.sendStatus(200);
+    //   }
+    // });
   });
 
   app.use(function (req, res) {
