@@ -1,3 +1,9 @@
+variable "lambdabot_stage" {
+  type = "string"
+  description = "CONSTANT for API stage"
+  default = "api"
+}
+
 data "terraform_remote_state" "lambdabot_lambda" {
   backend = "s3"
   config {
@@ -20,8 +26,7 @@ resource "aws_iam_role" "lambdabot_gateway_role" {
       "Principal": {
         "Service": "apigateway.amazonaws.com"
       },
-      "Effect": "Allow",
-      "Sid": ""
+      "Effect": "Allow"
     }
   ]
 }
@@ -57,16 +62,34 @@ resource "aws_api_gateway_rest_api" "lambdabot_api" {
   name = "lambdabot"
 }
 
+resource "aws_api_gateway_resource" "lambdabot_resource" {
+  rest_api_id = "${aws_api_gateway_rest_api.lambdabot_api.id}"
+  parent_id   = "${aws_api_gateway_rest_api.lambdabot_api.root_resource_id}"
+  path_part   = "{proxy+}"
+}
+
 resource "aws_api_gateway_method" "lambdabot_method" {
   rest_api_id   = "${aws_api_gateway_rest_api.lambdabot_api.id}"
-  resource_id   = "${aws_api_gateway_rest_api.lambdabot_api.root_resource_id}"
+  resource_id   = "${aws_api_gateway_resource.lambdabot_resource.id}"
   http_method   = "ANY"
   authorization = "NONE"
 }
 
+resource "aws_api_gateway_method_settings" "lambdabot_method_settings" {
+  rest_api_id = "${aws_api_gateway_rest_api.lambdabot_api.id}"
+  stage_name  = "${var.lambdabot_stage}"
+  method_path = "*/*"
+
+  settings {
+    metrics_enabled    = true
+    logging_level      = "INFO"
+    data_trace_enabled = true
+  }
+}
+
 resource "aws_api_gateway_integration" "lambdabot_integration" {
   rest_api_id             = "${aws_api_gateway_rest_api.lambdabot_api.id}"
-  resource_id             = "${aws_api_gateway_rest_api.lambdabot_api.root_resource_id}"
+  resource_id             = "${aws_api_gateway_resource.lambdabot_resource.id}"
   http_method             = "${aws_api_gateway_method.lambdabot_method.http_method}"
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
@@ -76,7 +99,21 @@ resource "aws_api_gateway_integration" "lambdabot_integration" {
 
 resource "aws_api_gateway_deployment" "lambdabot_deployment" {
   rest_api_id = "${aws_api_gateway_rest_api.lambdabot_api.id}"
-  stage_name  = "api"
+  stage_name  = "${var.lambdabot_stage}"
+}
+
+resource "aws_api_gateway_usage_plan" "lambdabot_usage" {
+  name         = "lambdabot_usage"
+
+  api_stages {
+    api_id = "${aws_api_gateway_rest_api.lambdabot_api.id}"
+    stage  = "${var.lambdabot_stage}"
+  }
+
+  quota_settings {
+    limit  = 1000
+    period = "MONTH"
+  }
 }
 
 output "lambdabot_id" {
@@ -84,5 +121,5 @@ output "lambdabot_id" {
 }
 
 output "lambdabot_url" {
-  value = "https://${aws_api_gateway_rest_api.lambdabot_api.id}.execute-api.${var.region}.amazonaws.com/api"
+  value = "https://${aws_api_gateway_rest_api.lambdabot_api.id}.execute-api.${var.region}.amazonaws.com/${var.lambdabot_stage}"
 }
