@@ -11,12 +11,14 @@ shift
 shift
 shift
 
+export PATH=".bin:${PATH}"
+
 cd terraform/$COMPONENT
 sed -e "s/_PROJECT_/$PROJECT/" \
     -e "s/_PROFILE_/$PROFILE/" \
     -e "s/_REGION_/$REGION/" \
     -e "s/_COMPONENT_/$COMPONENT/" \
     ../provider.tf.tpl > provider.tf
-terraform init
-terraform $@
+terragrunt init
+terragrunt $@ --terragrunt-non-interactive 
 rm -f provider.tf

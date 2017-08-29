@@ -1,3 +1,4 @@
+.bin/
 terraform/*/.terraform/
 terraform/*/provider.tf
 terraform/*/terraform.tfstate.backup
