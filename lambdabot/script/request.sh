@@ -10,9 +10,11 @@ API_URL=$(./script/discover.sh ${PROFILE} ${REGION})
 
 CURL="curl -v -w '\n'"
 
-if [[ ${ENDPOINT} == "index" ]]; then
+if [[ "${ENDPOINT}" == "index" ]]; then
   ${CURL} ${API_URL}
-elif [[ ${ENDPOINT} == "hello" ]]; then
+elif [[ "${ENDPOINT}" == "test" ]]; then
+  ${CURL} ${API_URL}/test
+elif [[ "${ENDPOINT}" == "hello" ]]; then
   ${CURL} -d '{"name":"script"}' -H 'Content-Type: application/json' ${API_URL}/hello
 else
   echo "Unknown endpoint: ${ENDPOINT}"

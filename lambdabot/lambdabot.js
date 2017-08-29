@@ -45,6 +45,11 @@ exports.createApp = function() {
     res.send('Hello World!');
   });
 
+  app.get('/test', function (req, res) {
+    console.log('Invoked test.');
+    res.send('Completed test.');
+  });
+
   app.post('/hello', function (req, res) {
     const name = req.body.name;
     const data = JSON.stringify({ name });

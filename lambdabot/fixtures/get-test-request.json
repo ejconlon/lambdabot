@@ -43,6 +43,9 @@
     "CloudFront-Forwarded-Proto": "https",
     "Accept-Encoding": "gzip, deflate, sdch"
   },
+  "pathParameters": {
+    "proxy": "test"
+  },
   "httpMethod": "GET",
-  "path": "/"
+  "path": "/test"
 }

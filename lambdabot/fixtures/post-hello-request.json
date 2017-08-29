@@ -21,7 +21,7 @@
       "sourceIp": "127.0.0.1",
       "accountId": null
     },
-    "stage": "prod"
+    "stage": "api"
   },
   "headers": {
     "Via": "1.1 08f323deadbeefa7af34d5feb414ce27.cloudfront.net (CloudFront)",
