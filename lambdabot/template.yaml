@@ -3,13 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: lambdabot
 
 Resources:
-  lambdabot_gateway:
-    Type: AWS::Serverless::Api
-    Properties:
-      Variables:
-         lambdabot_lambda: !Ref lambdabot_lambda
-
-  lambdabot_lambda:
+  lambdabot:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda.handler
@@ -18,12 +12,10 @@ Resources:
         ProxyApiRoot:
           Type: Api
           Properties:
-            RestApiId: !Ref lambdabot_gateway
             Path: /
             Method: ANY
         ProxyApiGreedy:
           Type: Api
           Properties:
-            RestApiId: !Ref lambdabot_gateway
             Path: /{proxy+}
             Method: ANY

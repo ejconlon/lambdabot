@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 data "terraform_remote_state" "s3" {
   backend = "s3"
   config {
@@ -6,6 +8,15 @@ data "terraform_remote_state" "s3" {
     bucket  = "${var.state_bucket}"
     key     = "${var.project}/s3/terraform.tfstate"
   }
+}
+
+resource "aws_cloudwatch_log_group" "lambdabot_firehose_log_group" {
+  name = "lambdabot_firehose_log_group"
+}
+
+resource "aws_cloudwatch_log_stream" "lambdabot_firehose_log_stream" {
+  name           = "lambdabot_firehose_log_stream"
+  log_group_name = "${aws_cloudwatch_log_group.lambdabot_firehose_log_group.name}"
 }
 
 resource "aws_iam_role" "lambdabot_firehose_role" {
@@ -20,8 +31,7 @@ resource "aws_iam_role" "lambdabot_firehose_role" {
       "Principal": {
         "Service": "firehose.amazonaws.com"
       },
-      "Effect": "Allow",
-      "Sid": ""
+      "Effect": "Allow"
     }
   ]
 }
@@ -48,6 +58,15 @@ resource "aws_iam_policy" "lambdabot_firehose_policy" {
         "${data.terraform_remote_state.s3.firehose_bucket_arn}",
         "${data.terraform_remote_state.s3.firehose_bucket_arn}/*"
       ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.lambdabot_firehose_log_group.name}:log-stream:${aws_cloudwatch_log_stream.lambdabot_firehose_log_stream.name}"
+      ]
     }
   ]
 }
@@ -67,6 +86,13 @@ resource "aws_kinesis_firehose_delivery_stream" "lambdabot_firehose" {
     role_arn   = "${aws_iam_role.lambdabot_firehose_role.arn}"
     bucket_arn = "${data.terraform_remote_state.s3.firehose_bucket_arn}"
     prefix     = "v1/"
+    buffer_interval = 60
+
+    cloudwatch_logging_options {
+      enabled = true
+      log_group_name = "${aws_cloudwatch_log_group.lambdabot_firehose_log_group.name}"
+      log_stream_name = "${aws_cloudwatch_log_stream.lambdabot_firehose_log_stream.name}"
+    }
   }
 }
 

@@ -11,7 +11,10 @@ function createDefaultConfig() {
     firehoseName: 'lambdabot_firehose'
   };
   if (process.env.hasOwnProperty('PROFILE')) {
+    console.log('Found PROFILE ' + process.env.PROFILE);
     config.profile = process.env.PROFILE;
+  } else {
+    console.log('Missing PROFILE');
   }
   return config;
 };
@@ -28,14 +31,14 @@ function createCredentialProvider(config) {
 }
 
 exports.createApp = function() {
-  // const config = createDefaultConfig();
-  //
-  // const credentialProvider = createCredentialProvider(config);
-  //
-  // const firehose = new AWS.Firehose({
-  //   region: config.region,
-  //   credentialProvider
-  // });
+  const config = createDefaultConfig();
+
+  const credentialProvider = createCredentialProvider(config);
+
+  const firehose = new AWS.Firehose({
+    region: config.region,
+    credentialProvider
+  });
 
   const app = express();
 
@@ -45,32 +48,24 @@ exports.createApp = function() {
     res.send('Hello World!');
   });
 
-  app.get('/test', function (req, res) {
-    if (req.query.log === '1') {
-      console.log('Logging from test');
-    }
-    res.send('Completed test');
-  });
-
   app.post('/hello', function (req, res) {
     const name = req.body.name;
     const data = JSON.stringify({ name });
     console.log('Writing: ' + data);
-    // const params = {
-    //   DeliveryStreamName: config.firehoseName,
-    //   Record: {
-    //     Data: data
-    //   }
-    // }
-    res.sendStatus(200);
-    // firehose.putRecord(params, function (err, data) {
-    //   if (err) {
-    //     console.error(err.stack);
-    //     res.sendStatus(500);
-    //   } else {
-    //     res.sendStatus(200);
-    //   }
-    // });
+    const params = {
+      DeliveryStreamName: config.firehoseName,
+      Record: {
+        Data: data
+      }
+    }
+    firehose.putRecord(params, function (err, data) {
+      if (err) {
+        console.error(err.stack);
+        res.sendStatus(500);
+      } else {
+        res.sendStatus(200);
+      }
+    });
   });
 
   app.use(function (req, res) {
