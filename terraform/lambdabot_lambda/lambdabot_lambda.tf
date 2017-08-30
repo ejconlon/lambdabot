@@ -53,6 +53,13 @@ resource "aws_iam_policy" "lambdabot_lambda_policy" {
       "Resource": [
         "${data.terraform_remote_state.lambdabot_firehose.lambdabot_firehose_arn}"
       ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:*"
+      ],
+      "Resource": "arn:aws:logs:*:*:*"
     }
   ]
 }

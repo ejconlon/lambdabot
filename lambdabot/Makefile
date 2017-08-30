@@ -16,6 +16,9 @@ sam-validate:
 sam-get:
 	sam local invoke lambdabot -e fixtures/get-slash-request.json
 
+sam-test:
+	sam local invoke lambdabot -e fixtures/get-test-request.json
+
 sam-post:
 	sam local invoke lambdabot -e fixtures/post-hello-request.json
 

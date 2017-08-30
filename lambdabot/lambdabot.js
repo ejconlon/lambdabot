@@ -44,6 +44,10 @@ exports.createApp = function() {
 
   app.use(bodyParser.json());
 
+  app.get('/test', function(req, res) {
+    res.send('Test completed');
+  });
+
   app.get('/', function (req, res) {
     res.send('Hello World!');
   });
